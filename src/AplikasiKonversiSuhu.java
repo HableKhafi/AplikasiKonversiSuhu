@@ -314,7 +314,7 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
 
     private void txtInputKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInputKeyTyped
         char c = evt.getKeyChar();
-        if (!Character.isDigit(c) && c != '.') {
+        if (!Character.isDigit(c)) {
                 evt.consume(); // Menolak input non-angka
         }          // TODO add your handling code here:
     }//GEN-LAST:event_txtInputKeyTyped
