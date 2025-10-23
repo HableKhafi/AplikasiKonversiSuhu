@@ -87,6 +87,7 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
 
         cmbKe.setFont(new java.awt.Font("Poppins SemiBold", 0, 12)); // NOI18N
         cmbKe.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Celcius", "Fahrenheit", "Reamur", "Kelvin" }));
+        cmbKe.setSelectedIndex(1);
         cmbKe.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 cmbKeItemStateChanged(evt);
@@ -321,8 +322,15 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
 
     private void txtInputKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInputKeyReleased
         if (rbOtomatis.isSelected()) {
-        btnKonversiActionPerformed(null);
-    }        // TODO add your handling code here:
+        // 🔹 Cek apakah field kosong atau hanya berisi spasi
+        String input = txtInput.getText().trim();
+        if (!input.isEmpty()) {
+            btnKonversiActionPerformed(null);
+        } else {
+            // Kosong → bersihkan hasil agar tidak menampilkan angka lama
+            txtHasil.setText("");
+        }
+    }      
     }//GEN-LAST:event_txtInputKeyReleased
 
     private void rbManualItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbManualItemStateChanged
@@ -339,13 +347,19 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
 
     private void cmbDariItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbDariItemStateChanged
         if (rbOtomatis.isSelected() && evt.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
-        btnKonversiActionPerformed(null);
+        String input = txtInput.getText().trim();
+        if (!input.isEmpty()) {
+            btnKonversiActionPerformed(null);
+        }
     }        // TODO add your handling code here:
     }//GEN-LAST:event_cmbDariItemStateChanged
 
     private void cmbKeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbKeItemStateChanged
-        if (rbOtomatis.isSelected() && evt.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
-        btnKonversiActionPerformed(null);
+       if (rbOtomatis.isSelected() && evt.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
+        String input = txtInput.getText().trim();
+        if (!input.isEmpty()) {
+            btnKonversiActionPerformed(null);
+        }
     }        // TODO add your handling code here:
     }//GEN-LAST:event_cmbKeItemStateChanged
 
