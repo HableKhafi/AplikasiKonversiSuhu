@@ -226,23 +226,34 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
 
     private void btnKonversiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKonversiActionPerformed
         try {
-        double nilai = Double.parseDouble(txtInput.getText());
+        // Ganti baris lama ini:
+        // double nilai = Double.parseDouble(txtInput.getText());
+
+        // 🔹 Ganti dengan ini:
+        String inputText = txtInput.getText().trim();
+
+        // Ubah koma jadi titik (agar bisa 37,5 atau 37.5)
+        inputText = inputText.replace(',', '.');
+
+        // Ubah string ke angka desimal
+        double nilai = Double.parseDouble(inputText);
+
+        // Ambil pilihan skala
         String dari = cmbDari.getSelectedItem().toString();
         String ke = cmbKe.getSelectedItem().toString();
-        
-         if (dari.equals(ke)) {
+
+        // Validasi: skala sama
+        if (dari.equals(ke)) {
             JOptionPane.showMessageDialog(this,
                     "Skala suhu 'Dari' dan 'Ke' tidak boleh sama!",
                     "Peringatan",
                     JOptionPane.WARNING_MESSAGE);
-            return; // hentikan proses konversi
+            return;
         }
-         
+
+        // Mulai rumus konversi
         double hasil = 0;
 
-        
-        
-        // Konversi Celcius ke lainnya
         if (dari.equals("Celcius")) {
             switch (ke) {
                 case "Fahrenheit":
@@ -254,13 +265,8 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
                 case "Kelvin":
                     hasil = nilai + 273.15;
                     break;
-                default:
-                    hasil = nilai;
             }
-        }
-
-        // Konversi Fahrenheit ke lainnya
-        else if (dari.equals("Fahrenheit")) {
+        } else if (dari.equals("Fahrenheit")) {
             switch (ke) {
                 case "Celcius":
                     hasil = (nilai - 32) * 5/9;
@@ -271,13 +277,8 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
                 case "Kelvin":
                     hasil = ((nilai - 32) * 5/9) + 273.15;
                     break;
-                default:
-                    hasil = nilai;
             }
-        }
-
-        // Tambahkan logika untuk Reamur dan Kelvin
-        else if (dari.equals("Reamur")) {
+        } else if (dari.equals("Reamur")) {
             switch (ke) {
                 case "Celcius":
                     hasil = nilai * 5/4;
@@ -288,8 +289,6 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
                 case "Kelvin":
                     hasil = (nilai * 5/4) + 273.15;
                     break;
-                default:
-                    hasil = nilai;
             }
         } else if (dari.equals("Kelvin")) {
             switch (ke) {
@@ -302,11 +301,10 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
                 case "Reamur":
                     hasil = (nilai - 273.15) * 4/5;
                     break;
-                default:
-                    hasil = nilai;
             }
         }
 
+        // Tampilkan hasil dengan 2 angka desimal
         txtHasil.setText(String.format("%.2f", hasil));
     } catch (NumberFormatException e) {
         JOptionPane.showMessageDialog(this, "Masukkan nilai suhu yang valid!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -315,22 +313,42 @@ public class AplikasiKonversiSuhu extends javax.swing.JFrame {
 
     private void txtInputKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInputKeyTyped
         char c = evt.getKeyChar();
-        if (!Character.isDigit(c)) {
-                evt.consume(); // Menolak input non-angka
-        }          // TODO add your handling code here:
+    String text = txtInput.getText();
+
+    // 🔹 Hanya izinkan angka, titik, koma, dan tanda minus
+    if (!Character.isDigit(c) && c != '.' && c != ',' && c != '-') {
+        evt.consume(); // abaikan karakter lain
+    }
+
+    // 🔹 Cegah pengguna mengetik lebih dari satu titik atau koma
+    if ((c == '.' || c == ',') && (text.contains(".") || text.contains(","))) {
+        evt.consume();
+    }
+
+    // 🔹 Cegah tanda minus di tengah atau lebih dari satu
+    if (c == '-' && text.length() > 0) {
+        evt.consume();
+    }
     }//GEN-LAST:event_txtInputKeyTyped
 
     private void txtInputKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtInputKeyReleased
         if (rbOtomatis.isSelected()) {
-        // 🔹 Cek apakah field kosong atau hanya berisi spasi
         String input = txtInput.getText().trim();
-        if (!input.isEmpty()) {
-            btnKonversiActionPerformed(null);
-        } else {
-            // Kosong → bersihkan hasil agar tidak menampilkan angka lama
+
+        // 🔹 Kalau kosong, kosongkan hasil tanpa konversi
+        if (input.isEmpty()) {
             txtHasil.setText("");
+            return;
         }
-    }      
+
+        // 🔹 Kalau hanya "-", ".", atau "," jangan konversi dulu
+        if (input.equals("-") || input.equals(".") || input.equals(",")) {
+            return; // abaikan dulu sampai user lanjut mengetik angka
+        }
+
+        // 🔹 Kalau sudah valid, baru konversi
+        btnKonversiActionPerformed(null);
+    }   
     }//GEN-LAST:event_txtInputKeyReleased
 
     private void rbManualItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rbManualItemStateChanged
